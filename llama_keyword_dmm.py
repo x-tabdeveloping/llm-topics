@@ -1,5 +1,3 @@
-import random
-
 from llama_cpp import Llama
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
@@ -11,8 +9,8 @@ corpus = fetch_20newsgroups(
     remove=("headers", "footers", "quotes"),
     categories=["alt.atheism", "sci.space"],
 ).data
-corpus = random.sample(corpus, 100)
 corpus = [text[:1000] for text in corpus]
+
 
 prompt_template = """
 ### System:
