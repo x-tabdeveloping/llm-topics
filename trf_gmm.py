@@ -7,7 +7,7 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.mixture import GaussianMixture
 from sklearn.pipeline import make_pipeline
 
-from utils.representation_based import LeakyTfidf, MixtureTopicModel
+from utils.representation_based import LeakyCountVectorizer, MixtureTopicModel
 
 print("Loading data")
 corpus = fetch_20newsgroups(
@@ -19,7 +19,7 @@ print("Fitting topic model...")
 representation = SentenceEncoder("all-MiniLM-L6-v2")
 mixture = GaussianMixture(10)
 model = MixtureTopicModel(representation, mixture)
-pipe = make_pipeline(LeakyTfidf(stop_words="english"), model)
+pipe = make_pipeline(LeakyCountVectorizer(stop_words="english"), model)
 pipe.fit(corpus)
 
 

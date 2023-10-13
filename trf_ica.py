@@ -11,7 +11,6 @@ from sklearn.preprocessing import MinMaxScaler
 from utils.representation_based import (
     DecomposingTopicModel,
     LeakyCountVectorizer,
-    LeakyTfidf,
 )
 
 print("Loading data")
