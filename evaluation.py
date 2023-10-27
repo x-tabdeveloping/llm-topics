@@ -13,10 +13,10 @@ def evaluate_model(model, dataset, metrics: dict):
     results = dict()
     for name in metrics.keys():
         results[name] = []
-    for _ in range(1):
+    for _ in range(3):
         model_output = model.train_model(dataset)
         for name, metric in metrics.items():
-            results[name].append(metric.score(model_output))
+            results[name].append(metric(dataset).score(model_output))
     for name, runs in results.items():
         results[name] = np.mean(runs)
     return results
@@ -27,8 +27,8 @@ datasets["BBC News"] = Dataset()
 datasets["BBC News"].fetch_dataset("BBC_News")
 
 metrics = {
-    "Diversity": TopicDiversity(),
-    "Coherence": Coherence(),
+    "Diversity": lambda dataset: TopicDiversity(),
+    "Coherence": lambda dataset: Coherence(texts=dataset.get_corpus()),
 }
 results = []
 for model_name, model in models.items():
