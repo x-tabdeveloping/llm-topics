@@ -22,8 +22,14 @@ class KeyBertVectorizer(BaseEstimator, TransformerMixin):
         for text in X:
             yield dict(self.keybert.extract_keywords(text, top_n=self.top_n))
 
+    def fit_transform(self, X, y=None):
+        dtm = self.vectorizer.fit_transform(self.stream_keywords(X))
+        if self.zero_cutoff:
+            dtm[dtm < 0] = 0
+        return dtm
+
     def fit(self, X, y=None):
-        self.vectorizer.fit(self.stream_keywords(X))
+        self.fit_transform()
         return self
 
     def transform(self, X: Iterable[str]):
