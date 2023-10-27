@@ -1,43 +1,37 @@
-import numpy as np
+import pickle
+
 import pandas as pd
 import tabulate
-from octis.dataset.dataset import Dataset
 
+from utils.datasets import datasets
 from utils.metrics import metrics
-from utils.models import models
 
 
-def evaluate_model(model, dataset, metrics: dict):
+def evaluate_model(model_output, dataset, metrics: dict):
     results = dict()
-    for name in metrics.keys():
-        results[name] = []
-    for _ in range(3):
-        model_output = model.train_model(dataset)
-        for name, metric in metrics.items():
-            results[name].append(metric(dataset).score(model_output))
-    for name, runs in results.items():
-        results[name] = np.mean(runs)
+    for name, metric in metrics.items():
+        print(f" - {name}...")
+        results[name] = metric(dataset).score(model_output)
     return results
 
 
-datasets = dict()
-datasets["BBC News"] = Dataset()
-datasets["BBC News"].fetch_dataset("BBC_News")
+with open("results.pkl", "b") as in_file:
+    results = pickle.load(in_file)
 
-results = []
-for model_name, model in models.items():
-    print(f"Model: {model_name}")
-    for dataset_name, dataset in datasets.items():
-        print(f"Dataset: {dataset_name}")
-        for n_topics in [10, 20, 30, 40, 50]:
-            print(f"N Topics: {n_topics}")
-            topic_model = model(n_topics)
-            model_res = evaluate_model(topic_model, dataset, metrics)
-            model_res["N Topics"] = n_topics
-            model_res["Model"] = model_name
-            results.append(model_res)
+records = []
+for run in results:
+    print("------------------------------")
+    print("Model: ", run["model"])
+    print("Dataset: ", run["dataset"])
+    print("N topics: ", run["n_topics"])
+    print("Evaluating on:")
+    dataset = datasets[run["dataset"]]
+    eval_res = evaluate_model(run["model_output"], dataset, metrics)
+    print("------------------------------")
+    run.pop("model_output")
+    records.append({**run, **eval_res})
 
-summary = pd.DataFrame.from_records(results)
+summary = pd.DataFrame.from_records(records)
 summary.to_csv("evaluation.csv")
 
 print(tabulate.tabulate(summary, headers="keys", tablefmt="psql"))
