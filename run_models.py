@@ -13,13 +13,14 @@ try:
 except FileNotFoundError:
     print("No previous results found starting from scratch.")
     done = set()
+    prev_results = []
 
 
 datasets = dict()
 datasets["BBC News"] = Dataset()
 datasets["BBC News"].fetch_dataset("BBC_News")
 
-results = []
+results = prev_results
 for model_name, model in models.items():
     print(f"Model: {model_name}")
     for dataset_name, dataset in datasets.items():
