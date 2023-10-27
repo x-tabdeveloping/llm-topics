@@ -4,6 +4,17 @@ from octis.dataset.dataset import Dataset
 
 from utils.models import models
 
+try:
+    with open("results.pkl", "rb") as in_file:
+        prev_results = pickle.load(in_file)
+        done = set()
+        for run in prev_results:
+            done.add((run["model"], run["dataset"], run["n_topics"]))
+except FileNotFoundError:
+    print("No previous results found starting from scratch.")
+    done = set()
+
+
 datasets = dict()
 datasets["BBC News"] = Dataset()
 datasets["BBC News"].fetch_dataset("BBC_News")
@@ -15,6 +26,9 @@ for model_name, model in models.items():
         print(f"Dataset: {dataset_name}")
         for n_topics in [10, 20, 30, 40, 50]:
             print(f"N Topics: {n_topics}")
+            if (model_name, dataset_name, n_topics) in done:
+                print("Already Done Previously, continuing...")
+                continue
             topic_model = model(n_topics)
             model_output = topic_model.train_model(dataset)
             results.append(
