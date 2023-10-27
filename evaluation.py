@@ -15,7 +15,7 @@ def evaluate_model(model_output, dataset, metrics: dict):
     return results
 
 
-with open("results.pkl", "b") as in_file:
+with open("results.pkl", "rb") as in_file:
     results = pickle.load(in_file)
 
 records = []
