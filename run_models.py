@@ -40,6 +40,5 @@ for model_name, model in models.items():
                     n_topics=n_topics,
                 )
             )
-
-with open("results.pkl", "wb") as out_file:
-    pickle.dump(results, out_file)
+            with open("results.pkl", "wb") as out_file:
+                pickle.dump(results, out_file)

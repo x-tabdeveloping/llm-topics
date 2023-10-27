@@ -44,8 +44,7 @@ for run in results:
     print("------------------------------")
     run.pop("model_output")
     records.append({**run, **eval_res})
-
-summary = pd.DataFrame.from_records(records)
-summary.to_csv("evaluation.csv")
+    summary = pd.DataFrame.from_records(records)
+    summary.to_csv("evaluation.csv")
 
 print(tabulate.tabulate(summary, headers="keys", tablefmt="psql"))
