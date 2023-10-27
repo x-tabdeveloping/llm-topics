@@ -1,6 +1,5 @@
 from typing import Iterable
 
-import numpy as np
 from keybert import KeyBERT
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction import DictVectorizer
