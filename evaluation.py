@@ -2,10 +2,8 @@ import numpy as np
 import pandas as pd
 import tabulate
 from octis.dataset.dataset import Dataset
-from octis.evaluation_metrics.coherence_metrics import Coherence
-from octis.evaluation_metrics.diversity_metrics import TopicDiversity
-from tqdm import tqdm
 
+from utils.metrics import metrics
 from utils.models import models
 
 
@@ -26,10 +24,6 @@ datasets = dict()
 datasets["BBC News"] = Dataset()
 datasets["BBC News"].fetch_dataset("BBC_News")
 
-metrics = {
-    "Diversity": lambda dataset: TopicDiversity(),
-    "Coherence": lambda dataset: Coherence(texts=dataset.get_corpus()),
-}
 results = []
 for model_name, model in models.items():
     print(f"Model: {model_name}")
