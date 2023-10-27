@@ -3,7 +3,6 @@ from typing import Iterable
 from keybert import KeyBERT
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction import DictVectorizer
-from tqdm import tqdm
 
 
 class KeyBertVectorizer(BaseEstimator, TransformerMixin):
@@ -24,11 +23,11 @@ class KeyBertVectorizer(BaseEstimator, TransformerMixin):
             yield dict(self.keybert.extract_keywords(text, top_n=self.top_n))
 
     def fit(self, X, y=None):
-        self.vectorizer.fit(self.stream_keywords(tqdm(X)))
+        self.vectorizer.fit(self.stream_keywords(X))
         return self
 
     def transform(self, X: Iterable[str]):
-        dtm = self.vectorizer.transform(self.stream_keywords(tqdm(X)))
+        dtm = self.vectorizer.transform(self.stream_keywords(X))
         if self.zero_cutoff:
             dtm[dtm < 0] = 0
         return dtm
