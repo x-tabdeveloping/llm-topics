@@ -31,9 +31,12 @@ metrics = {
     "Coherence": Coherence(),
 }
 results = []
-for model_name, model in tqdm(models.items(), desc="Evaluating all models."):
+for model_name, model in models.items():
+    print(f"Model: {model_name}")
     for dataset_name, dataset in datasets.items():
+        print(f"Dataset: {dataset_name}")
         for n_topics in [10, 20, 30, 40, 50]:
+            print(f"N Topics: {n_topics}")
             topic_model = model(n_topics)
             model_res = evaluate_model(topic_model, dataset, metrics)
             model_res["N Topics"] = n_topics
