@@ -1,8 +1,7 @@
 import pickle
 import time
 
-from octis.dataset.dataset import Dataset
-
+from utils.datasets import datasets
 from utils.models import models
 
 try:
@@ -16,10 +15,6 @@ except FileNotFoundError:
     done = set()
     prev_results = []
 
-
-datasets = dict()
-datasets["BBC News"] = Dataset()
-datasets["BBC News"].fetch_dataset("BBC_News")
 
 results = prev_results
 for model_name, model in models.items():
