@@ -18,7 +18,13 @@ models["LDA"] = lambda n_topics: SklearnModel(
     CountVectorizer(stop_words="english", max_features=8000),
     LatentDirichletAllocation(n_topics),
 )
-models["Eigen"] = lambda n_topics: EigenModel(n_topics)
-models["BERTopic"] = lambda n_topics: BERTopicModel(nr_topics=n_topics)
-models["CTM"] = lambda n_topics: CTM(num_topics=n_topics)
+models["Eigen"] = lambda n_topics: EigenModel(
+    n_topics, sentence_transformer_name="all-MiniLM-L6-v2"
+)
+models["BERTopic"] = lambda n_topics: BERTopicModel(
+    nr_topics=n_topics, embedding_model="all-MiniLM-L6-v2"
+)
+models["CTM"] = lambda n_topics: CTM(
+    num_topics=n_topics, bert_model="all-MiniLM-L6-v2"
+)
 models["ETM"] = lambda n_topics: ETM(num_topics=n_topics)
