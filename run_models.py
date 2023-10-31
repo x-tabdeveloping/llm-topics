@@ -1,4 +1,5 @@
 import pickle
+import time
 
 from octis.dataset.dataset import Dataset
 
@@ -31,13 +32,16 @@ for model_name, model in models.items():
                 print("Already Done Previously, continuing...")
                 continue
             topic_model = model(n_topics)
+            start_time = time.time()
             model_output = topic_model.train_model(dataset)
+            end_time = time.time()
             results.append(
                 dict(
                     model=model_name,
                     dataset=dataset_name,
                     model_output=model_output,
                     n_topics=n_topics,
+                    duration=end_time - start_time,
                 )
             )
             with open("results.pkl", "wb") as out_file:
