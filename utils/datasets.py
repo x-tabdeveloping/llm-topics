@@ -18,7 +18,7 @@ corpus = [
 ]
 vocabulary = set([token for text in corpus for token in text])
 datasets["20 Newsgroups Dirty"] = Dataset(
-    corpus=newsgroups.data,
+    corpus=corpus,
     vocabulary=list(vocabulary),
     labels=list(np.array(newsgroups.target_names)[newsgroups.target]),
 )
