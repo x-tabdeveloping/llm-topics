@@ -5,6 +5,7 @@ import tabulate
 
 from utils.datasets import datasets
 from utils.metrics import metrics
+from utils.models import models
 
 try:
     previous_records = pd.read_csv("evaluation.csv", index_col=0).to_dict(
@@ -31,6 +32,10 @@ with open("results.pkl", "rb") as in_file:
 
 records = previous_records
 for run in results:
+    if run["model"] not in models:
+        print("Model not in standard models: ", run["model"])
+        print("Skipping...")
+        continue
     print("------------------------------")
     print("Model: ", run["model"])
     print("Dataset: ", run["dataset"])
