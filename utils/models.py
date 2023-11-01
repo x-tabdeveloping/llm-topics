@@ -1,4 +1,3 @@
-from octis.models.ETM import ETM
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -6,6 +5,7 @@ from utils.compatibility import (
     BERTopicModel,
     ContextualizedTopicModel,
     SklearnModel,
+    Top2VecModel,
 )
 from utils.eigen import EigenModel
 from utils.keybert import KeyBertVectorizer
@@ -37,4 +37,6 @@ models["CombinedTM"] = lambda n_topics: ContextualizedTopicModel(
     sentence_transformer_name="all-MiniLM-L6-v2",
     kind="combined",
 )
-models["ETM"] = lambda n_topics: ETM(num_topics=n_topics)
+models["Top2Vec"] = lambda n_topics: Top2VecModel(
+    nr_topics=n_topics, sentence_transformer_name="all-MiniLM-L6-v2"
+)

@@ -10,6 +10,7 @@ from octis.models.model import AbstractModel
 from sentence_transformers.models import SentenceTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from top2vec import Top2Vec
 
 
 class SklearnModel(AbstractModel):
@@ -109,4 +110,29 @@ class ContextualizedTopicModel(AbstractModel):
         results["topic-word-matrix"] = ctm.get_topic_word_matrix(
             training_dataset
         )
+        return results
+
+
+class Top2VecModel(AbstractModel):
+    def __init__(self, nr_topics: int, sentence_transformer_name: str):
+        self.nr_topics = nr_topics
+        self.sentence_transformer_name = sentence_transformer_name
+
+    def train_model(self, dataset: Dataset, hyperparams=None, top_words=10):
+        results = dict()
+        corpus = dataset.get_corpus()
+        texts = [" ".join(words) for words in corpus]
+        model = Top2Vec(texts, embedding_model=self.sentence_transformer_name)
+        try:
+            model.hieararchical_topic_reduction(self.nr_topics)
+            reduced = True
+        except Exception:
+            print("Couldn't reduce number of topics.")
+            reduced = False
+
+        topic_words, _, _ = model.get_topics(reduced=reduced)
+        topics = []
+        for topic in topic_words:
+            topics.append(topic[:top_words])
+        results["topics"] = topics
         return results
