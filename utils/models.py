@@ -1,9 +1,12 @@
-from octis.models.CTM import CTM
 from octis.models.ETM import ETM
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 
-from utils.compatibility import BERTopicModel, SklearnModel
+from utils.compatibility import (
+    BERTopicModel,
+    ContextualizedTopicModel,
+    SklearnModel,
+)
 from utils.eigen import EigenModel
 from utils.keybert import KeyBertVectorizer
 
@@ -24,7 +27,14 @@ models["Eigen"] = lambda n_topics: EigenModel(
 models["BERTopic"] = lambda n_topics: BERTopicModel(
     nr_topics=n_topics, embedding_model="all-MiniLM-L6-v2"
 )
-models["CTM"] = lambda n_topics: CTM(
-    num_topics=n_topics, bert_model="all-MiniLM-L6-v2"
+models["ZeroShotTM"] = lambda n_topics: ContextualizedTopicModel(
+    nr_topics=n_topics,
+    sentence_transformer_name="all-MiniLM-L6-v2",
+    kind="zeroshot",
+)
+models["CombinedTM"] = lambda n_topics: ContextualizedTopicModel(
+    nr_topics=n_topics,
+    sentence_transformer_name="all-MiniLM-L6-v2",
+    kind="combined",
 )
 models["ETM"] = lambda n_topics: ETM(num_topics=n_topics)
