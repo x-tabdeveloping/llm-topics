@@ -51,7 +51,7 @@ class BERTopicModel(AbstractModel):
         self.model.fit(texts)
         results["topic-word-matrix"] = self.model.c_tf_idf_.todense()
         topics = []
-        for topic_id in self.model.topics_:
+        for topic_id in range(len(set(self.model.topics_)) - 1):
             topics.append([term for term, _ in self.model.get_topic(topic_id)])
         results["topics"] = topics
         results["topic-document-matrix"] = self.model.approximate_distribution(
