@@ -8,3 +8,5 @@ keybert==0.8.2
 sentence-transformers==2.2.2
 bertopic==0.15.0
 gensim==4.2.0
+top2vec==1.0.29
+contextualized-topic-models==2.5.0
