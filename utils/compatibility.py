@@ -104,9 +104,7 @@ class ContextualizedTopicModel(AbstractModel):
         results["topic-document-matrix"] = ctm.get_doc_topic_distribution(
             training_dataset
         )
-        results["topic-word-matrix"] = ctm.get_topic_word_matrix(
-            training_dataset
-        )
+        results["topic-word-matrix"] = ctm.get_topic_word_matrix()
         return results
 
 
