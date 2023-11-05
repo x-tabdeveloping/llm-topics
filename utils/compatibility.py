@@ -7,7 +7,7 @@ from contextualized_topic_models.utils.data_preparation import (
 from gensim.utils import tokenize
 from octis.dataset.dataset import Dataset
 from octis.models.model import AbstractModel
-from sentence_transformers.models import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from top2vec import Top2Vec

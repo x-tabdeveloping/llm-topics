@@ -1,3 +1,4 @@
+import json
 import pickle
 import time
 
@@ -5,18 +6,23 @@ from utils.datasets import datasets
 from utils.models import models
 
 try:
-    with open("results.pkl", "rb") as in_file:
-        prev_results = pickle.load(in_file)
+    with open("results.json", "r") as in_file:
+        prev_results = json.load(in_file)
         done = set()
         for run in prev_results:
             done.add((run["model"], run["dataset"], run["n_topics"]))
+    # with open("results.pkl", "rb") as in_file:
+    #     # prev_results = pickle.load(in_file)
+    #     done = set()
+    #     for run in prev_results:
+    #         done.add((run["model"], run["dataset"], run["n_topics"]))
 except FileNotFoundError:
     print("No previous results found starting from scratch.")
     done = set()
-    prev_results = []
+    # prev_results = []
 
 
-results = prev_results
+results = []
 for model_name, model in models.items():
     print(f"Model: {model_name}")
     for dataset_name, dataset in datasets.items():
