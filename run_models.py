@@ -1,6 +1,7 @@
 import json
 import pickle
 import time
+from pathlib import Path
 
 from utils.datasets import datasets
 from utils.models import models
@@ -11,16 +12,14 @@ try:
         done = set()
         for run in prev_results:
             done.add((run["model"], run["dataset"], run["n_topics"]))
-    # with open("results.pkl", "rb") as in_file:
-    #     # prev_results = pickle.load(in_file)
-    #     done = set()
-    #     for run in prev_results:
-    #         done.add((run["model"], run["dataset"], run["n_topics"]))
 except FileNotFoundError:
     print("No previous results found starting from scratch.")
     done = set()
-    # prev_results = []
 
+timestamp = time.time_ns()
+
+out_dir = Path("results")
+out_dir.mkdir(exist_ok=True)
 
 results = []
 for model_name, model in models.items():
@@ -45,5 +44,5 @@ for model_name, model in models.items():
                     duration=end_time - start_time,
                 )
             )
-            with open("results.pkl", "wb") as out_file:
+            with open(f"results_{timestamp}.pkl", "wb") as out_file:
                 pickle.dump(results, out_file)
