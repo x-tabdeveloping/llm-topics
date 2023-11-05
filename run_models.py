@@ -7,11 +7,9 @@ from utils.datasets import datasets
 from utils.models import models
 
 try:
-    with open("results.json", "r") as in_file:
-        prev_results = json.load(in_file)
-        done = set()
-        for run in prev_results:
-            done.add((run["model"], run["dataset"], run["n_topics"]))
+    with open("done.json", "r") as done_file:
+        done = json.load(done_file)
+        done = set([tuple(entry) for entry in done])
 except FileNotFoundError:
     print("No previous results found starting from scratch.")
     done = set()
@@ -44,5 +42,7 @@ for model_name, model in models.items():
                     duration=end_time - start_time,
                 )
             )
-            with open(f"results_{timestamp}.pkl", "wb") as out_file:
+            with open(
+                out_dir.joinpath(f"results_{timestamp}.pkl"), "wb"
+            ) as out_file:
                 pickle.dump(results, out_file)

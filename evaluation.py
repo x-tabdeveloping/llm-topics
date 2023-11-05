@@ -27,10 +27,11 @@ def evaluate_model(model_output, dataset, metrics: dict):
     return results
 
 
-with open("results.pkl", "rb") as in_file:
+with open("joint_results.pkl", "rb") as in_file:
     results = pickle.load(in_file)
 
 records = previous_records
+summary = pd.DataFrame.from_records(records)
 for run in results:
     if run["model"] not in models:
         print("Model not in standard models: ", run["model"])
