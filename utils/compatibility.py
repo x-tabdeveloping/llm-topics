@@ -1,9 +1,8 @@
 import numpy as np
 from bertopic import BERTopic
 from contextualized_topic_models.models.ctm import CombinedTM, ZeroShotTM
-from contextualized_topic_models.utils.data_preparation import (
-    TopicModelDataPreparation,
-)
+from contextualized_topic_models.utils.data_preparation import \
+    TopicModelDataPreparation
 from gensim.utils import tokenize
 from octis.dataset.dataset import Dataset
 from octis.models.model import AbstractModel
@@ -93,9 +92,7 @@ class ContextualizedTopicModel(AbstractModel):
             text_for_contextual=texts, text_for_bow=preprocessed_texts
         )
         transformer = SentenceTransformer(self.sentence_transformer_name)
-        embedding_dimensionality = transformer.modules[
-            -1
-        ].word_embedding_dimension
+        embedding_dimensionality = transformer.encode("something").shape[0]
         model_class = ZeroShotTM if self.kind == "zeroshot" else CombinedTM
         ctm = model_class(
             bow_size=len(qt.vocab),
