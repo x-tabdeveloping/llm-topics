@@ -10,18 +10,22 @@ models = dict()
 models["KeyBert"] = lambda n_topics: SklearnModel(
     KeyBertVectorizer(model="all-MiniLM-L6-v2"), NMF(n_topics)
 )
-models["Nmf"] = lambda n_topics: SklearnModel(CountVectorizer(), NMF(n_topics))
+models["Nmf"] = lambda n_topics: SklearnModel(
+    CountVectorizer(min_df=10), NMF(n_topics)
+)
 models["Lda"] = lambda n_topics: SklearnModel(
-    CountVectorizer(),
+    CountVectorizer(min_df=10),
     LatentDirichletAllocation(n_topics),
 )
 models["EigenModel"] = lambda n_topics: EigenModel(
     n_topics,
     sentence_transformer_name="all-MiniLM-L6-v2",
-    vectorizer_args=dict(),
+    vectorizer_args=dict(min_df=10),
 )
-models["BERTopic"] = lambda n_topics: BERTopicModel(
-    nr_topics=n_topics, embedding_model="all-MiniLM-L6-v2"
+models["Bertopic"] = lambda n_topics: BERTopicModel(
+    nr_topics=n_topics,
+    embedding_model="all-MiniLM-L6-v2",
+    vectorizer_model=CountVectorizer(min_df=10),
 )
 models["ZeroShotTM"] = lambda n_topics: ContextualizedTopicModel(
     nr_topics=n_topics,
