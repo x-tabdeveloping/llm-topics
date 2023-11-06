@@ -42,6 +42,9 @@ for model_name, model in models.items():
                     duration=end_time - start_time,
                 )
             )
+            done.add((model_name, dataset_name, n_topics))
+            with open("done.json", "w") as done_file:
+                json.dump(list(done), done_file)
             with open(
                 out_dir.joinpath(f"results_{timestamp}.pkl"), "wb"
             ) as out_file:
