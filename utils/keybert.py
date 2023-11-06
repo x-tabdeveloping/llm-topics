@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Dict, Iterable
 
 from keybert import KeyBERT
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -19,7 +19,7 @@ class KeyBertVectorizer(BaseEstimator, TransformerMixin):
         self.vectorizer = DictVectorizer()
         self.zero_cutoff = zero_cutoff
 
-    def stream_keywords(self, X: Iterable[str]) -> Iterable[dict[str, float]]:
+    def stream_keywords(self, X: Iterable[str]) -> Iterable[Dict[str, float]]:
         for text in X:
             yield dict(self.keybert.extract_keywords(text, top_n=self.top_n))
 
