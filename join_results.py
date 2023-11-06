@@ -5,7 +5,7 @@ from glob import glob
 from utils.datasets import datasets
 from utils.models import models
 
-files = glob.glob("results/*.pkl")
+files = glob("results/*.pkl")
 done = set()
 results = []
 
