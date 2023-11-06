@@ -1,6 +1,7 @@
 import json
 import pickle
 from glob import glob
+from typing import Tuple
 
 from utils.datasets import datasets
 from utils.models import models
@@ -14,7 +15,7 @@ def is_valid(entry: dict) -> bool:
     return (entry["model"] in models) and (entry["dataset"] in datasets)
 
 
-def identifier(entry: dict) -> tuple:
+def identifier(entry: dict) -> Tuple:
     return (entry["model"], entry["dataset"], entry["n_topics"])
 
 

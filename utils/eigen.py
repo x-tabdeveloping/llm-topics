@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import numpy as np
 from octis.dataset.dataset import Dataset
@@ -36,7 +36,7 @@ class EigenModel(TransformerMixin, AbstractModel):
         self,
         n_components: int,
         sentence_transformer_name: str = "all-MiniLM-L6-v2",
-        vectorizer_args: Optional[dict[str, Any]] = None,
+        vectorizer_args: Optional[Dict[str, Any]] = None,
         specificity: float = 1,
     ):
         self.n_components = n_components
@@ -78,7 +78,7 @@ class EigenModel(TransformerMixin, AbstractModel):
 
     def get_top_k(
         self, top_n: int = 15, diversity: float = 0.2
-    ) -> list[list[str]]:
+    ) -> List[List[str]]:
         results = []
         for component in self.components_:
             top_words = maximum_marginal_relevance(
@@ -92,7 +92,7 @@ class EigenModel(TransformerMixin, AbstractModel):
 
     def train_model(
         self, dataset: Dataset, hyperparams=None, top_words=10
-    ) -> dict:
+    ) -> Dict:
         results = dict()
         corpus = dataset.get_corpus()
         texts = [" ".join(words) for words in corpus]
