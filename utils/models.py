@@ -1,12 +1,8 @@
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 
-from utils.compatibility import (
-    BERTopicModel,
-    ContextualizedTopicModel,
-    SklearnModel,
-    Top2VecModel,
-)
+from utils.compatibility import (BERTopicModel, ContextualizedTopicModel,
+                                 SklearnModel, Top2VecModel)
 from utils.eigen import EigenModel
 from utils.keybert import KeyBertVectorizer
 
@@ -14,11 +10,11 @@ models = dict()
 models["KeyBert"] = lambda n_topics: SklearnModel(
     KeyBertVectorizer(model="all-MiniLM-L6-v2"), NMF(n_topics)
 )
-models["NMF"] = lambda n_topics: SklearnModel(
-    CountVectorizer(stop_words="english", max_features=8000), NMF(n_topics)
+models["Nmf"] = lambda n_topics: SklearnModel(
+    CountVectorizer(max_features=8000), NMF(n_topics)
 )
-models["LDA"] = lambda n_topics: SklearnModel(
-    CountVectorizer(stop_words="english", max_features=8000),
+models["Lda"] = lambda n_topics: SklearnModel(
+    CountVectorizer(max_features=8000),
     LatentDirichletAllocation(n_topics),
 )
 models["Eigen"] = lambda n_topics: EigenModel(
