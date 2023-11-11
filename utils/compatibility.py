@@ -1,15 +1,18 @@
 import numpy as np
 from bertopic import BERTopic
 from contextualized_topic_models.models.ctm import CombinedTM, ZeroShotTM
-from contextualized_topic_models.utils.data_preparation import \
-    TopicModelDataPreparation
+from contextualized_topic_models.utils.data_preparation import (
+    TopicModelDataPreparation,
+)
 from gensim.utils import tokenize
+from hdbscan import HDBSCAN
 from octis.dataset.dataset import Dataset
 from octis.models.model import AbstractModel
 from sentence_transformers import SentenceTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from top2vec import Top2Vec
+from umap.umap_ import UMAP
 
 
 class SklearnModel(AbstractModel):
@@ -45,13 +48,22 @@ class SklearnModel(AbstractModel):
 
 
 class BERTopicModel(AbstractModel):
-    def __init__(self, **kwargs):
+    def __init__(self, hdbscan_args, umap_args, **kwargs):
         self.kwargs = kwargs
+        self.hdbscan_args = hdbscan_args
+        self.umap_args = umap_args
 
     def train_model(
         self, dataset: Dataset, hyperparams=None, top_words=10
     ) -> dict:
-        self.model = BERTopic(top_n_words=top_words, **self.kwargs)
+        umap_model = UMAP(self.umap_args)
+        hdbscan_model = HDBSCAN(self.hdbscan_args)
+        self.model = BERTopic(
+            top_n_words=top_words,
+            umap_model=umap_model,
+            hdbscan_model=hdbscan_model,
+            **self.kwargs,
+        )
         results = dict()
         corpus = dataset.get_corpus()
         texts = [" ".join(words) for words in corpus]
@@ -79,7 +91,6 @@ class ContextualizedTopicModel(AbstractModel):
 
     def preprocess(self, document: str) -> str:
         tokens = tokenize(document, lower=True, deacc=True)
-        tokens = filter(lambda token: token not in ENGLISH_STOP_WORDS, tokens)
         return " ".join(tokens)
 
     def train_model(self, dataset: Dataset, hyperparams=None, top_words=10):
@@ -109,15 +120,22 @@ class ContextualizedTopicModel(AbstractModel):
 
 
 class Top2VecModel(AbstractModel):
-    def __init__(self, nr_topics: int, sentence_transformer_name: str):
+    def __init__(
+        self, nr_topics: int, sentence_transformer_name: str, **kwargs
+    ):
         self.nr_topics = nr_topics
         self.sentence_transformer_name = sentence_transformer_name
+        self.model_kwargs = kwargs
 
     def train_model(self, dataset: Dataset, hyperparams=None, top_words=10):
         results = dict()
         corpus = dataset.get_corpus()
         texts = [" ".join(words) for words in corpus]
-        model = Top2Vec(texts, embedding_model=self.sentence_transformer_name)
+        model = Top2Vec(
+            texts,
+            embedding_model=self.sentence_transformer_name,
+            **self.model_kwargs,
+        )
         try:
             model.hieararchical_topic_reduction(self.nr_topics)
             reduced = True
