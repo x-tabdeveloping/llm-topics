@@ -104,7 +104,7 @@ class ContextualizedTopicModel(AbstractModel):
         corpus = dataset.get_corpus()
         texts = [" ".join(words) for words in corpus]
         vocab = (
-            CountVectorizer(self.vectorizer_args)
+            CountVectorizer(**self.vectorizer_args)
             .fit(texts)
             .get_feature_names_out()
         )
