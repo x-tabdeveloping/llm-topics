@@ -32,7 +32,7 @@ class GMMTopicModel(TransformerMixin, AbstractModel):
             self.sentence_transformer_name
         )
         embeddings = np.stack(self.sentence_transformer.encode(X))
-        self.mixture = GaussianMixture(20)
+        self.mixture = GaussianMixture(self.n_components)
         self.mixture.fit(embeddings)
         document_topic_matrix = self.mixture.predict_proba(embeddings)
         self.components_ = soft_ctf_idf(
