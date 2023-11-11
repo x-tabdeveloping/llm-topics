@@ -56,8 +56,8 @@ class BERTopicModel(AbstractModel):
     def train_model(
         self, dataset: Dataset, hyperparams=None, top_words=10
     ) -> dict:
-        umap_model = UMAP(self.umap_args)
-        hdbscan_model = HDBSCAN(self.hdbscan_args)
+        umap_model = UMAP(**self.umap_args)
+        hdbscan_model = HDBSCAN(**self.hdbscan_args)
         self.model = BERTopic(
             top_n_words=top_words,
             umap_model=umap_model,
