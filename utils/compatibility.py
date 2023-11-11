@@ -10,7 +10,7 @@ from octis.dataset.dataset import Dataset
 from octis.models.model import AbstractModel
 from sentence_transformers import SentenceTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from sklearn.feature_extraction.text import CountVectorizer
 from top2vec import Top2Vec
 from umap.umap_ import UMAP
 
@@ -81,23 +81,35 @@ class BERTopicModel(AbstractModel):
 
 class ContextualizedTopicModel(AbstractModel):
     def __init__(
-        self, nr_topics: int, sentence_transformer_name: str, kind: str
+        self,
+        nr_topics: int,
+        sentence_transformer_name: str,
+        kind: str,
+        vectorizer_args,
     ):
         self.nr_topics = nr_topics
         self.sentence_transformer_name = sentence_transformer_name
         self.kind = kind
+        self.vectorizer_args = vectorizer_args
         if self.kind not in ("zeroshot", "combined"):
             raise ValueError(f"CTM has to be zeroshot or combined, not {kind}")
 
-    def preprocess(self, document: str) -> str:
+    def preprocess(self, document: str, vocab) -> str:
         tokens = tokenize(document, lower=True, deacc=True)
+        tokens = (token for token in tokens if token in vocab)
         return " ".join(tokens)
 
     def train_model(self, dataset: Dataset, hyperparams=None, top_words=10):
         results = dict()
         corpus = dataset.get_corpus()
         texts = [" ".join(words) for words in corpus]
-        preprocessed_texts = [self.preprocess(text) for text in texts]
+        vocab = (
+            CountVectorizer(self.vectorizer_args)
+            .fit(texts)
+            .get_feature_names_out()
+        )
+        vocab = set(vocab)
+        preprocessed_texts = [self.preprocess(text, vocab) for text in texts]
         qt = TopicModelDataPreparation(self.sentence_transformer_name)
         training_dataset = qt.fit(
             text_for_contextual=texts, text_for_bow=preprocessed_texts

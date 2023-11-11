@@ -48,6 +48,7 @@ models["ZeroShotTM"] = lambda n_topics: ContextualizedTopicModel(
     nr_topics=n_topics,
     sentence_transformer_name="all-MiniLM-L6-v2",
     kind="zeroshot",
+    vectorizer_args=dict(min_df=10),
 )
 models["Top2Vec"] = lambda n_topics: Top2VecModel(
     nr_topics=n_topics,
