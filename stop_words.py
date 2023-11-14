@@ -15,19 +15,22 @@ for run in results:
     if run["dataset"] == "20 Newsgroups Dirty":
         n_stopwords = 0
         n_total = 0
+        n_nonalphabetic = 0
         for topic in run["model_output"]["topics"]:
             for word in topic:
                 n_total += 1
                 if word in ENGLISH_STOP_WORDS:
                     n_stopwords += 1
+                if not word.isalpha():
+                    n_nonalphabetic += 1
         records.append(
             dict(
                 n_topics=run["n_topics"],
                 model=run["model"],
                 stopword_frequency=n_stopwords / n_total,
+                freq_nonalphabetic=n_nonalphabetic / n_total,
             )
         )
-
 data = pd.DataFrame.from_records(records)
 
 fig = px.line(
@@ -46,6 +49,55 @@ fig = fig.update_traces(
 fig = fig.update_xaxes(title="Number of Topics")
 fig = fig.update_yaxes(title="Frequency of Stop Words in Topics")
 fig.write_image("figures/stop_words.png", scale=2)
+
+fig = px.box(
+    data,
+    y="model",
+    x="freq_nonalphabetic",
+    color="model",
+    template="plotly_white",
+    width=800,
+    height=800,
+    color_discrete_sequence=px.colors.qualitative.Antique,
+    points="all",
+)
+fig = fig.update_traces(showlegend=False)
+fig = fig.update_yaxes(
+    title="Model",
+    categoryorder="array",
+    categoryarray=[
+        "Nmf",
+        "Lda",
+        "BERTopic",
+        "ZeroShotTM",
+        "GMM",
+        "Top2Vec",
+        "EigenModel",
+        "KeyBert",
+    ],
+)
+fig = fig.update_xaxes(
+    title="Frequency of Terms Containing Non-Alphabetic Characters in Topics"
+)
+fig.write_image("figures/nonalphabetic.png", scale=2)
+
+fig = px.scatter(
+    data,
+    x="freq_nonalphabetic",
+    y="stopword_frequency",
+    color="model",
+    template="plotly_white",
+    width=800,
+    height=800,
+)
+fig = fig.update_traces(
+    marker=dict(size=12, opacity=0.8, line=dict(width=2, color="black"))
+)
+fig = fig.update_xaxes(
+    title="Frequency of Terms Containing Non-Alphabetic Characters in Topics"
+)
+fig = fig.update_yaxes(title="Frequency of Stop Words in Topics")
+fig.write_image("figures/stop_word_nonalphabetic.png")
 
 dataset = datasets["20 Newsgroups Dirty"].get_corpus()
 corpus = list(map(" ".join, dataset))
