@@ -7,7 +7,6 @@ from utils.compatibility import (
     SklearnModel,
     Top2VecModel,
 )
-from utils.eigen import EigenModel
 from utils.gaussian_mixture import GMMTopicModel
 from utils.keybert import KeyBertVectorizer
 
@@ -21,11 +20,6 @@ models["Nmf"] = lambda n_topics: SklearnModel(
 models["Lda"] = lambda n_topics: SklearnModel(
     CountVectorizer(min_df=10),
     LatentDirichletAllocation(n_topics),
-)
-models["EigenModel"] = lambda n_topics: EigenModel(
-    n_topics,
-    sentence_transformer_name="all-MiniLM-L6-v2",
-    vectorizer_args=dict(min_df=10),
 )
 models["BERTopic"] = lambda n_topics: BERTopicModel(
     nr_topics=n_topics,
