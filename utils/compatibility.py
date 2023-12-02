@@ -149,7 +149,7 @@ class Top2VecModel(AbstractModel):
             **self.model_kwargs,
         )
         try:
-            model.hieararchical_topic_reduction(self.nr_topics)
+            model.hierarchical_topic_reduction(self.nr_topics)
             reduced = True
         except Exception:
             print("Couldn't reduce number of topics.")

@@ -11,13 +11,13 @@ from utils.gaussian_mixture import GMMTopicModel
 from utils.keybert import KeyBertVectorizer
 
 models = dict()
-models["KeyBert"] = lambda n_topics: SklearnModel(
+models["KeyNMF"] = lambda n_topics: SklearnModel(
     KeyBertVectorizer(model="all-MiniLM-L6-v2"), NMF(n_topics)
 )
-models["Nmf"] = lambda n_topics: SklearnModel(
+models["NMF"] = lambda n_topics: SklearnModel(
     CountVectorizer(min_df=10), NMF(n_topics)
 )
-models["Lda"] = lambda n_topics: SklearnModel(
+models["LDA"] = lambda n_topics: SklearnModel(
     CountVectorizer(min_df=10),
     LatentDirichletAllocation(n_topics),
 )
